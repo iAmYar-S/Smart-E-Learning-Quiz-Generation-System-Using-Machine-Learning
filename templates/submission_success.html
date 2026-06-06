@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Submitted</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+
+<div class="card shadow-sm border-0 text-center p-5" style="max-width: 400px; width: 100%;">
+    <div class="text-success mb-4">
+        <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+    </div>
+    <h2 class="fw-bold">Exam Submitted!</h2>
+    <p class="text-muted">Great effort, <strong>{{ name }}</strong>.</p>
+    
+    <div class="my-4 p-3 bg-light rounded">
+        <h4 class="text-primary fw-bold">{{ score }} / {{ total }}</h4>
+        <small class="text-uppercase text-muted fw-bold">Final Score</small>
+    </div>
+
+    <a href="/student_dashboard" class="btn btn-primary btn-lg w-100 mt-3">Return to Dashboard</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+:root {
+    --quiz-primary: #5c67f2;    /* Deep Indigo */
+    --quiz-accent: #ff8c42;     /* Energetic Orange */
+    --quiz-bg: #f4f7fa;        /* Soft Grey-Blue */
+}
+
+/* Dark Theme Colors */
+[data-bs-theme="dark"] {
+    --quiz-bg: #121212;        /* Dark Background */
+}
+
+body {
+    background-color: var(--quiz-bg) !important;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s ease; /* Adds a smooth fade when switching themes */
+}
+
+/* Card Styling for a "Paper" look */
+.card {
+    border-radius: 15px !important;
+    border: none !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: var(--quiz-primary);
+    border-radius: 8px;
+    padding: 10px 25px;
+}
+
+/* Quiz Question Active State */
+.list-group-item.active {
+    background-color: var(--quiz-primary);
+    border-color: var(--quiz-primary);
+}
+
+/* Header/Nav */
+.navbar {
+    background: white;
+    border-bottom: 3px solid var(--quiz-primary);
+}

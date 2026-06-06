@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Smart E-Learning System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="pb-5">
+
+<div class="container mt-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+        <h1 class="mb-0 text-primary">Student Learning Portal</h1>
+        <div>
+            <span class="me-3 text-muted">Logged in as: <strong class="text-body">{{ session['email'] }}</strong></span>
+            <a href="/profile" class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-person-fill me-1"></i>Profile</a>
+            <a href="/logout" class="btn btn-sm btn-outline-danger">Logout</a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-sm mb-4 border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="card-title mb-0"><i class="bi bi-door-open me-2"></i>Join Official Exam</h5>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <p class="text-muted mb-4">Enter the 6-character Share Code provided by your teacher to begin an official assessment.</p>
+                    
+                    <form action="/join_quiz" method="POST">
+                        <input type="text" name="share_code" class="form-control text-center text-uppercase fs-3 mb-3 p-3 bg-body" placeholder="e.g., A1B2C3" required maxlength="6">
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Enter Exam Room</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow-sm mb-4 border-0">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="card-title mb-0"><i class="bi bi-journal-text me-2"></i>Self-Study: Generate Practice Quiz</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/student_generate" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Upload Study Material (PDF)</label>
+                            <input type="file" name="document" class="form-control" accept=".pdf" required>
+                            <div class="form-text">Upload your notes to generate a personal practice test.</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Question Type</label>
+                                <select name="q_type" class="form-select">
+                                    <option value="mcq">Multiple Choice</option>
+                                    <option value="tf">True / False</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Number of Questions</label>
+                                <input type="number" name="num_questions" class="form-control" value="3" min="1" max="10">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info text-white w-100 py-2 fw-bold">Generate & Start Practice</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="card-title mb-0"><i class="bi bi-card-checklist me-2"></i>My Generated Practice Tests</h5>
+                </div>
+                <div class="card-body bg-body-tertiary p-4">
+                    <div class="row">
+                        {% for quiz in practice_quizzes %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card shadow-sm h-100 border-0 bg-body">
+                                <div class="card-body">
+                                    <h5 class="text-primary mb-1">Code: <strong>{{ quiz.share_code }}</strong></h5>
+                                    <p class="mb-1 text-muted small"><strong>Format:</strong> {{ quiz.type.upper() if quiz.type else 'MIXED' }} | <strong>Questions:</strong> {{ quiz.total_questions }}</p>
+                                    <div class="d-flex gap-2 mt-3">
+                                        <a href="/take_quiz/{{ quiz.share_code }}" class="btn btn-sm btn-success w-100">Launch</a>
+                                        <form action="/delete_test/{{ quiz.share_code }}" method="POST" class="m-0 w-100">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger w-100" onclick="return confirm('Delete this practice test?');">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="col-12 text-center text-muted py-3">
+                            <p class="mb-0">You have no active practice tests. Upload a PDF above to generate one!</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="card-title mb-0"><i class="bi bi-trophy me-2"></i>My Performance History</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Date Taken</th>
+                                    <th>Category</th>
+                                    <th>Test Code</th>
+                                    <th>Format</th>
+                                    <th>Raw Score</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for score in scores %}
+                                <tr>
+                                    <td class="ps-4 text-muted">{{ score.date_taken.strftime('%b %d, %Y - %H:%M') }}</td>
+                                    
+                                    <td>
+                                        {% if score.is_practice %}
+                                            <span class="badge bg-info text-dark">Practice</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Official Exam</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td><span class="badge bg-secondary">{{ score.share_code }}</span></td>
+                                    <td><span class="badge border border-dark text-body">{{ score.type.upper() if score.type else 'MIXED' }}</span></td>
+                                    <td><strong>{{ score.score }}</strong> / {{ score.total_questions }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if (score.score / score.total_questions) >= 0.5 else 'danger' }}">
+                                            {{ ((score.score / score.total_questions) * 100) | round(1) }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">You haven't submitted any completed quizzes yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

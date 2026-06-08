@@ -50,3 +50,4 @@ typing_extensions==4.15.0
 uvicorn==0.47.0
 Werkzeug==3.1.8
 gunicorn
+PyPDF2

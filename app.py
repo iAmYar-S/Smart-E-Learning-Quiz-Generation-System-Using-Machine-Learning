@@ -62,7 +62,7 @@ def login():
             session.update({'user_id': user['id'], 'email': user['email'], 'role': user['role']})
             return redirect(url_for('dashboard') if user['role'] == 'teacher' else url_for('student_home'))
         flash("Invalid credentials.", "danger")
-    return render_template('login.html')
+    return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

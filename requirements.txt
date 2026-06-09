@@ -52,4 +52,4 @@ Werkzeug==3.1.8
 gunicorn
 PyPDF2
 flask
-google
+google-generativeai

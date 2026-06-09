@@ -256,4 +256,7 @@ def delete_test(share_code):
     return redirect(request.referrer or url_for('student_home'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Get Render's assigned port, or default to 5000 for local testing
+    port = int(os.environ.get("PORT", 5000))
+    # Bind to 0.0.0.0 to allow external connections
+    app.run(host="0.0.0.0", port=port, debug=False)

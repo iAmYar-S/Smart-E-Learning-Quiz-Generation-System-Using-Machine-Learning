@@ -21,10 +21,11 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # ==========================================
 def get_db_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="@iAmYar02", 
-        database="quiz_db"
+        host=os.environ.get("DB_HOST", "localhost"),
+        user=os.environ.get("DB_USER", "root"),
+        password=os.environ.get("DB_PASSWORD", "@iAmYar02"), 
+        database=os.environ.get("DB_NAME", "quiz_db"),
+        port=os.environ.get("DB_PORT", 3306)
     )
 
 def generate_share_code():
@@ -255,4 +256,7 @@ def delete_test(share_code):
     return redirect(request.referrer or url_for('student_home'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Get Render's assigned port, or default to 5000 for local testing
+    port = int(os.environ.get("PORT", 5000))
+    # Bind to 0.0.0.0 to allow external connections
+    app.run(host="0.0.0.0", port=port, debug=False)

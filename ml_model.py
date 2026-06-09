@@ -1,11 +1,17 @@
 import google.generativeai as genai
 import json
+import os  # Added to access system environment variables
 
 # ==========================================
-# 1. CONFIGURE THE AI
+# 1. CONFIGURE THE AI SECURELY
 # ==========================================
-# Paste your actual Google API key inside these quotes!
-YOUR_API_KEY = "AIzaSyDPNM2glnzBP7jVGHnbaXV2CralBupW1zg"
+# Pulls directly from the Render Environment variables in production,
+# preventing accidental public leaks on GitHub.
+YOUR_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+if not YOUR_API_KEY:
+    print("Warning: GEMINI_API_KEY environment variable not found!")
+
 genai.configure(api_key=YOUR_API_KEY)
 
 # Using Gemini 2.5 Flash for lightning-fast processing of massive PDFs
